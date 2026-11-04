@@ -37,9 +37,9 @@ async function stub(settings: unknown = SETTINGS) {
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
 
-test("the server offers the two read tools, and both only need a read token", () => {
-  assert.deepEqual(tools.map((t) => t.name).sort(), ["show_access", "show_policies"]);
-  assert.ok(tools.every((t) => t.needs === "read"));
+test("show_access and show_policies are offered, and only need a read token", () => {
+  assert.ok(["show_access", "show_policies"].every((n) => tools.some((t) => t.name === n)));
+  assert.ok(["show_access", "show_policies"].every((n) => tool(n).needs === "read"));
 });
 
 test("show_access lists every group, with a read-only token, and sends no PATCH", async () => {

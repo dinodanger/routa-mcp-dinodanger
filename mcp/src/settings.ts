@@ -5,7 +5,12 @@ export type AccessRow = { group: string; apps: string[] };
 export type Policy = { id: string; label: string; value: boolean | number | string };
 export type Settings = { access: AccessRow[]; policies: Policy[] };
 
-const unexpected = () => new UserError("The platform's settings came back in a shape the server doesn't know, so nothing was done.");
+// The API never lists applications, only what each group reaches. So the server remembers every
+// application it has seen, which keeps one that loses its last group from becoming unknown.
+const seenApps = new Set<string>();
+export const knownApps = (): string[] => [...seenApps].sort();
+
+const unexpected =() => new UserError("The platform's settings came back in a shape the server doesn't know, so nothing was done.");
 
 export function parseSettings(raw: unknown): Settings {
   const s = raw as { access?: unknown; policies?: unknown } | null;
@@ -19,6 +24,7 @@ export function parseSettings(raw: unknown): Settings {
     if (typeof p?.id !== "string" || typeof p.label !== "string" || (t !== "boolean" && t !== "number" && t !== "string")) throw unexpected();
     return { id: p.id, label: p.label, value: p.value as Policy["value"] };
   });
+  for (const row of access) for (const app of row.apps) seenApps.add(app);
   return { access, policies };
 }
 
