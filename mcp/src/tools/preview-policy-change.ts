@@ -31,7 +31,8 @@ export const previewPolicyChange: Tool = {
     }
     if (value === found.value) return `No change: "${found.label}" is already ${showValue(value)}. There is nothing to apply.`;
     const description = `"${found.label}" would go from ${showValue(found.value)} to ${showValue(value)}.`;
-    const preview = createPreview({ type: "policy", id: found.id, value }, description);
+    const done = `"${found.label}" is now ${showValue(value)} (it was ${showValue(found.value)}).`;
+    const preview = createPreview({ type: "policy", id: found.id, value }, found.value, description, done);
     return `${description}\nNothing has been changed yet. To apply exactly this, use preview id ${preview.id} (valid for ${PREVIEW_MINUTES} minutes).`;
   },
 };

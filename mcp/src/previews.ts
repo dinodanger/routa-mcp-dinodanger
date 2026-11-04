@@ -5,15 +5,16 @@ export type Change =
   | { type: "access"; group: string; app: string; allowed: boolean }
   | { type: "policy"; id: string; value: boolean | number | string };
 
-export type Preview = { id: string; change: Change; description: string; createdAt: number; used: boolean };
+// before is what the settings held when the preview was made: whether the group reached the app, or the policy's value.
+export type Preview = { id: string; change: Change; before: boolean | number | string; description: string; done: string; createdAt: number; used: boolean };
 
 // A preview that nobody applied goes stale after this long.
 export const PREVIEW_MINUTES = 15;
 
 const previews = new Map<string, Preview>();
 
-export function createPreview(change: Change, description: string, now = Date.now()): Preview {
-  const preview = { id: randomUUID().slice(0, 8), change: Object.freeze({ ...change }) as Change, description, createdAt: now, used: false };
+export function createPreview(change: Change, before: Preview["before"], description: string, done: string, now = Date.now()): Preview {
+  const preview = { id: randomUUID().slice(0, 8), change: Object.freeze({ ...change }) as Change, before, description, done, createdAt: now, used: false };
   previews.set(preview.id, preview);
   return preview;
 }

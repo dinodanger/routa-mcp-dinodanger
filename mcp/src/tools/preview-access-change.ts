@@ -31,7 +31,8 @@ export const previewAccessChange: Tool = {
     const now = row.apps.includes(app);
     if (now === allowed) return `No change: ${group} ${allowed ? "already reaches" : "already doesn't reach"} ${app}. There is nothing to apply.`;
     const description = allowed ? `${group} would gain access to ${app}.` : `${group} would lose access to ${app}.`;
-    const preview = createPreview({ type: "access", group, app, allowed }, description);
+    const done = allowed ? `${group} now has access to ${app}.` : `${group} no longer has access to ${app}.`;
+    const preview = createPreview({ type: "access", group, app, allowed }, now, description, done);
     return `${description}\nNothing has been changed yet. To apply exactly this, use preview id ${preview.id} (valid for ${PREVIEW_MINUTES} minutes).`;
   },
 };

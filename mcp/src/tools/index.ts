@@ -2,6 +2,7 @@
 import { UserError } from "../platform.ts";
 import type { Platform, Scope } from "../platform.ts";
 import { showAccess } from "./show-access.ts";
+import { applyChange } from "./apply-change.ts";
 import { previewAccessChange } from "./preview-access-change.ts";
 import { previewPolicyChange } from "./preview-policy-change.ts";
 import { showPolicies } from "./show-policies.ts";
@@ -18,7 +19,7 @@ export type Tool = {
 export type ToolResult = { text: string; isError: boolean };
 
 // The tools the server offers. Each step of the plan adds its own here.
-export const tools: Tool[] = [showAccess, showPolicies, previewAccessChange, previewPolicyChange];
+export const tools: Tool[] = [showAccess, showPolicies, previewAccessChange, previewPolicyChange, applyChange];
 
 export async function callTool(tool: Tool, args: Record<string, unknown>, platform: Platform): Promise<ToolResult> {
   try {
