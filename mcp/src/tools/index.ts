@@ -1,0 +1,30 @@
+// What a tool is, and the one place a tool is run. Every call asks the platform what the token may do.
+import { UserError } from "../platform.ts";
+import type { Platform, Scope } from "../platform.ts";
+
+export type Tool = {
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+  // "admin" for anything that previews or changes settings.
+  needs: Scope;
+  run(args: Record<string, unknown>, platform: Platform): Promise<string>;
+};
+
+export type ToolResult = { text: string; isError: boolean };
+
+// No tools yet: the steps that follow add them here.
+export const tools: Tool[] = [];
+
+export async function callTool(tool: Tool, args: Record<string, unknown>, platform: Platform): Promise<ToolResult> {
+  try {
+    const scope = await platform.whoami();
+    if (tool.needs === "admin" && scope !== "admin") {
+      return { text: "This token is read-only, so it can't change settings. Nothing was changed. Ask an administrator, or use an admin token.", isError: true };
+    }
+    return { text: await tool.run(args, platform), isError: false };
+  } catch (err) {
+    if (err instanceof UserError) return { text: err.message, isError: true };
+    return { text: "Something went wrong inside the server. Nothing was changed.", isError: true };
+  }
+}
