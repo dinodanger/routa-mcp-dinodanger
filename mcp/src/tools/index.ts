@@ -1,6 +1,8 @@
 // What a tool is, and the one place a tool is run. Every call asks the platform what the token may do.
 import { UserError } from "../platform.ts";
 import type { Platform, Scope } from "../platform.ts";
+import { showAccess } from "./show-access.ts";
+import { showPolicies } from "./show-policies.ts";
 
 export type Tool = {
   name: string;
@@ -13,8 +15,8 @@ export type Tool = {
 
 export type ToolResult = { text: string; isError: boolean };
 
-// No tools yet: the steps that follow add them here.
-export const tools: Tool[] = [];
+// The tools the server offers. Each step of the plan adds its own here.
+export const tools: Tool[] = [showAccess, showPolicies];
 
 export async function callTool(tool: Tool, args: Record<string, unknown>, platform: Platform): Promise<ToolResult> {
   try {
