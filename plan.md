@@ -9,3 +9,5 @@ Scope is the brief's three things: read the settings, change them behind a previ
 - [x] 5. **Live run against the test environment.** Drive the server over stdio with both tokens: read, preview, apply, re-read, undo; read-only refused for preview and apply with the settings unchanged. Then run the verify skill for L1 to L11. (Writing the start command and tool list into `brain/` is left for later: this loop may not change `brain/`.)
 
 Check the port in .env first.
+
+And one more.
